@@ -68,7 +68,7 @@
   }
 
   .lamp {
-    position: fixed; top: 0; right: 8%; z-index: 2;
+    position: fixed; top: 0; right: 8%; z-index: 4;
     pointer-events: none; display: flex; flex-direction: column; align-items: center;
   }
   .lamp-cord { width: 2px; height: 100px; background: linear-gradient(to bottom, #4a2a10, #2a1408); margin: 0 auto; }
@@ -246,29 +246,43 @@
   .stand { width: 60%; height: 14px; background: linear-gradient(to bottom, var(--wood) 0%, #1e0e04 100%); border-radius: 0 0 8px 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.7); margin: 0 auto; }
   .stand-leg { width: 40%; height: 8px; background: linear-gradient(to bottom, #1e0e04, #120804); margin: 0 auto; border-radius: 0 0 6px 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
 
+  /* ── TV SCREEN GLOW on wall ── */
+  .tv-glow {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 48%, rgba(60,120,80,0.0) 0%, transparent 60%);
+    transition: background 0.6s ease;
+  }
+  body.lamp-off.tv-on .tv-glow {
+    background:
+      radial-gradient(ellipse at 50% 48%, rgba(40,100,65,0.22) 0%, rgba(20,60,40,0.1) 30%, transparent 62%),
+      radial-gradient(ellipse at 50% 48%, rgba(255,255,255,0.03) 0%, transparent 40%);
+  }
+
   /* ── LAMP SWITCH ── */
+  /* Cord lives inside .lamp so it always sits right below the shade */
   .lamp-switch-wrap {
-    position: fixed; top: 108px; right: calc(8% + 34px);
-    z-index: 4; display: flex; flex-direction: column; align-items: center; gap: 3px;
-    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    cursor: pointer; margin-top: 0;
+    pointer-events: all;
   }
   .lamp-pull-cord {
-    width: 1px; height: 28px;
+    width: 1px; height: 32px;
     background: linear-gradient(to bottom, #8a6030, #5a3a18);
   }
   .lamp-pull-bead {
-    width: 10px; height: 10px; border-radius: 50%;
+    width: 11px; height: 11px; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, #c8a050, #6a3a10);
     border: 1px solid #4a2a08;
     box-shadow: 0 2px 4px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
-    transition: transform 0.1s, box-shadow 0.1s;
+    transition: transform 0.12s, box-shadow 0.12s;
   }
   .lamp-switch-wrap:hover .lamp-pull-bead {
-    transform: scale(1.15);
-    box-shadow: 0 0 8px rgba(232,168,76,0.5), 0 2px 4px rgba(0,0,0,0.6);
+    transform: scale(1.18);
+    box-shadow: 0 0 8px rgba(232,168,76,0.55), 0 2px 4px rgba(0,0,0,0.6);
   }
   .lamp-switch-wrap:active .lamp-pull-bead {
-    transform: translateY(4px) scale(0.95);
+    transform: translateY(5px) scale(0.92);
   }
 
   /* Lamp off state */
@@ -308,12 +322,16 @@
 <div class="bg-vignette"></div>
 <div class="scanlines"></div>
 <div class="room-dark"></div>
-<div class="lamp" id="lamp"><div class="lamp-cord"></div><div class="lamp-shade" id="lampShade"></div></div>
-<div class="lamp-cone" id="lampCone"></div>
-<div class="lamp-switch-wrap" id="lampSwitch" title="Click to toggle lamp">
-  <div class="lamp-pull-cord"></div>
-  <div class="lamp-pull-bead"></div>
+<div class="tv-glow" id="tvGlow"></div>
+<div class="lamp" id="lamp">
+  <div class="lamp-cord"></div>
+  <div class="lamp-shade" id="lampShade"></div>
+  <div class="lamp-switch-wrap" id="lampSwitch" title="Click to toggle lamp">
+    <div class="lamp-pull-cord"></div>
+    <div class="lamp-pull-bead"></div>
+  </div>
 </div>
+<div class="lamp-cone" id="lampCone"></div>
 
 <div class="scene">
   <div class="cabinet">
