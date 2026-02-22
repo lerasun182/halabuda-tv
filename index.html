@@ -399,6 +399,12 @@ function onYouTubeIframeAPIReady() {
             } catch(err) {}
             // Stay playing muted — all channels run continuously like real TV
           }, 1800);
+        },
+        onStateChange: e => {
+          // When a video ends, jump to a random one — endless broadcast, never loops back to start
+          if (e.data === YT.PlayerState.ENDED) {
+            e.target.playVideoAt(Math.floor(Math.random() * 50));
+          }
         }
       }
     });
