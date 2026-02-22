@@ -485,9 +485,14 @@ function onYouTubeIframeAPIReady() {
           }, 1800);
         },
         onStateChange: e => {
-          // When a video ends, jump to a random one — endless broadcast, never loops back to start
+          // When a video ends, jump to a random one
           if (e.data === YT.PlayerState.ENDED) {
             e.target.playVideoAt(Math.floor(Math.random() * 50));
+          }
+          // If video gets queued/cued (age restriction, unavailable, region block)
+          // it will sit in CUED state — skip it immediately
+          if (e.data === YT.PlayerState.CUED) {
+            setTimeout(() => e.target.playVideoAt(Math.floor(Math.random() * 50)), 300);
           }
         }
       }
@@ -619,6 +624,41 @@ window.addEventListener("resize", checkLampOverlap);
 window.addEventListener("load",   checkLampOverlap);
 // Also run after a short delay to catch font/layout settle
 setTimeout(checkLampOverlap, 300);
+
+// ── WATCHDOG: skip stuck / ad-blocked / restricted videos ──
+// Checks every 5s — if a playing channel hasn't moved its time, it's stuck
+const watchdogState = [{time: 0, strikes: 0}, {time: 0, strikes: 0}, {time: 0, strikes: 0}];
+
+setInterval(() => {
+  players.forEach((p, i) => {
+    if (!p || typeof p.getPlayerState !== 'function') return;
+    const state = p.getPlayerState();
+    const currentTime = p.getCurrentTime ? p.getCurrentTime() : 0;
+
+    // States: -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
+    // If it's been "unstarted", "cued", or frozen (same time twice) — skip
+    const isFrozen = (state === -1 || state === 5);
+    const isStuck  = (state === 1 && Math.abs(currentTime - watchdogState[i].time) < 0.5);
+
+    if (isFrozen || isStuck) {
+      watchdogState[i].strikes++;
+      if (watchdogState[i].strikes >= 2) {
+        // Two consecutive strikes = truly stuck, skip to random video
+        // Only show static/distortion on the active channel (visible one)
+        if (i === activeChannel) {
+          showStatic();
+          triggerDistortion();
+          playChannelSwitch();
+        }
+        p.playVideoAt(Math.floor(Math.random() * 50));
+        watchdogState[i].strikes = 0;
+      }
+    } else {
+      watchdogState[i].strikes = 0;
+    }
+    watchdogState[i].time = currentTime;
+  });
+}, 5000);
 
 // ── LAMP SWITCH ──
 let lampOn = true;
