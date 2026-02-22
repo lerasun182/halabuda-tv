@@ -245,6 +245,61 @@
 
   .stand { width: 60%; height: 14px; background: linear-gradient(to bottom, var(--wood) 0%, #1e0e04 100%); border-radius: 0 0 8px 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.7); margin: 0 auto; }
   .stand-leg { width: 40%; height: 8px; background: linear-gradient(to bottom, #1e0e04, #120804); margin: 0 auto; border-radius: 0 0 6px 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
+
+  /* ── LAMP SWITCH ── */
+  .lamp-switch-wrap {
+    position: fixed; top: 108px; right: calc(8% + 34px);
+    z-index: 4; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer;
+  }
+  .lamp-pull-cord {
+    width: 1px; height: 28px;
+    background: linear-gradient(to bottom, #8a6030, #5a3a18);
+  }
+  .lamp-pull-bead {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #c8a050, #6a3a10);
+    border: 1px solid #4a2a08;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .lamp-switch-wrap:hover .lamp-pull-bead {
+    transform: scale(1.15);
+    box-shadow: 0 0 8px rgba(232,168,76,0.5), 0 2px 4px rgba(0,0,0,0.6);
+  }
+  .lamp-switch-wrap:active .lamp-pull-bead {
+    transform: translateY(4px) scale(0.95);
+  }
+
+  /* Lamp off state */
+  .lamp-shade.off {
+    background: linear-gradient(to bottom, #3a2a08, #4a3410, #5a4018);
+    box-shadow: 0 0 0 2px #3a2808;
+    filter: brightness(0.4);
+  }
+  .lamp-cone { transition: opacity 0.4s; }
+  .lamp-cone.off { opacity: 0; }
+
+  /* Room darkness overlay — controlled by JS classes on body */
+  .room-dark {
+    position: fixed; inset: 0; z-index: 0;
+    background: rgba(0,0,0,0);
+    pointer-events: none;
+    transition: background 0.5s;
+  }
+  /* lamp off + tv off = very dark */
+  body.lamp-off.tv-off .room-dark  { background: rgba(0,0,0,0.72); }
+  /* lamp off + tv on = darker room but screen glow present */
+  body.lamp-off.tv-on  .room-dark  { background: rgba(0,0,0,0.45); }
+  /* lamp on  + tv off = normal cozy room */
+  body.lamp-on.tv-off  .room-dark  { background: rgba(0,0,0,0.0); }
+  /* lamp on  + tv on  = brightest */
+  body.lamp-on.tv-on   .room-dark  { background: rgba(0,0,0,0.0); }
+
+  /* Screen glow — brighter when lamp is off */
+  .screen-wrap { transition: filter 0.5s; }
+  body.lamp-off.tv-on .screen-wrap { filter: brightness(1.18) contrast(1.05); }
+  body.lamp-on.tv-on  .screen-wrap { filter: brightness(1.0); }
 </style>
 </head>
 <body>
@@ -252,8 +307,13 @@
 <div class="bg-photo"></div>
 <div class="bg-vignette"></div>
 <div class="scanlines"></div>
-<div class="lamp"><div class="lamp-cord"></div><div class="lamp-shade"></div></div>
-<div class="lamp-cone"></div>
+<div class="room-dark"></div>
+<div class="lamp" id="lamp"><div class="lamp-cord"></div><div class="lamp-shade" id="lampShade"></div></div>
+<div class="lamp-cone" id="lampCone"></div>
+<div class="lamp-switch-wrap" id="lampSwitch" title="Click to toggle lamp">
+  <div class="lamp-pull-cord"></div>
+  <div class="lamp-pull-bead"></div>
+</div>
 
 <div class="scene">
   <div class="cabinet">
@@ -483,6 +543,7 @@ powerBtn.addEventListener("click", function () {
     pwrLight.classList.add("on");
     sigLight.style.display = "block";
     started = true;
+    document.body.classList.replace("tv-off", "tv-on");
     showOsd(activeChannel, parseInt(volSlider.value));
   } else {
     playPowerOff();
@@ -495,6 +556,7 @@ powerBtn.addEventListener("click", function () {
     pwrLight.classList.remove("on");
     sigLight.style.display = "none";
     started = false;
+    document.body.classList.replace("tv-on", "tv-off");
   }
 });
 
@@ -510,6 +572,42 @@ volSlider.addEventListener("input", function () {
   osd.classList.add("show");
   clearTimeout(osdTimeout);
   osdTimeout = setTimeout(() => osd.classList.remove("show"), 2200);
+});
+
+// ── LAMP SWITCH ──
+let lampOn = true;
+document.body.classList.add("lamp-on", "tv-off");
+
+function playLampClick() {
+  const ctx = getACtx(); const t = ctx.currentTime;
+  // Satisfying old rotary-pull click
+  const bufSize = Math.floor(ctx.sampleRate * 0.025);
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 2) * 0.6;
+  }
+  const src = ctx.createBufferSource(), gain = ctx.createGain();
+  const hpf = ctx.createBiquadFilter();
+  hpf.type = 'highpass'; hpf.frequency.value = 800;
+  src.buffer = buf; src.connect(hpf); hpf.connect(gain); gain.connect(ctx.destination);
+  gain.gain.value = 0.7; src.start(t);
+}
+
+document.getElementById("lampSwitch").addEventListener("click", () => {
+  playLampClick();
+  lampOn = !lampOn;
+  const shade = document.getElementById("lampShade");
+  const cone  = document.getElementById("lampCone");
+  if (lampOn) {
+    shade.classList.remove("off");
+    cone.classList.remove("off");
+    document.body.classList.replace("lamp-off", "lamp-on");
+  } else {
+    shade.classList.add("off");
+    cone.classList.add("off");
+    document.body.classList.replace("lamp-on", "lamp-off");
+  }
 });
 </script>
 </body>
