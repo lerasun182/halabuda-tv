@@ -237,6 +237,17 @@
   .power-btn:hover { border-color: var(--amber); color: var(--glow); box-shadow: 0 0 20px rgba(232,168,76,0.4), 0 4px 12px rgba(0,0,0,0.6); }
   .power-btn.on { border-color: #4aff7a; color: var(--green-glow); box-shadow: 0 0 16px rgba(26,255,74,0.35), 0 4px 12px rgba(0,0,0,0.6); }
 
+  .fs-btn {
+    width: 32px; height: 32px; border-radius: 6px;
+    border: 1px solid #3a1f08;
+    background: radial-gradient(circle at 40% 35%, #2a1508, #0e0704);
+    color: #7a4020; font-size: 13px; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    align-self: flex-end;
+  }
+  .fs-btn:hover { border-color: var(--amber); color: var(--glow); box-shadow: 0 0 10px rgba(232,168,76,0.35); }
+
   .vol-group { display: flex; flex-direction: column; align-items: center; gap: 5px; }
   .vol-label { font-family: 'VT323', monospace; font-size: 11px; color: var(--amber-dim); letter-spacing: 3px; text-transform: uppercase; }
 
@@ -374,6 +385,7 @@
         <button class="ch-btn" id="ch4" onclick="switchChannel(4)"><span class="ch-num">05</span> Шум - W.Noise</button>
       </div>
       <div class="center-controls">
+        <button class="fs-btn" id="fsBtn" title="Fullscreen">⛶</button>
         <div class="vol-group">
           <div class="vol-label">Гучність</div>
           <input type="range" id="volume" min="0" max="100" value="40">
@@ -680,6 +692,24 @@ setInterval(() => {
     watchdogState[i].time = currentTime;
   });
 }, 5000);
+
+// ── FULLSCREEN ──
+const fsBtn = document.getElementById("fsBtn");
+fsBtn.addEventListener("click", () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+    fsBtn.textContent = "⛶";
+    fsBtn.title = "Exit Fullscreen";
+  } else {
+    document.exitFullscreen();
+    fsBtn.textContent = "⛶";
+    fsBtn.title = "Fullscreen";
+  }
+});
+document.addEventListener("fullscreenchange", () => {
+  fsBtn.textContent = document.fullscreenElement ? "✕" : "⛶";
+  fsBtn.title = document.fullscreenElement ? "Exit Fullscreen" : "Fullscreen";
+});
 
 // ── LAMP SWITCH ──
 let lampOn = true;
