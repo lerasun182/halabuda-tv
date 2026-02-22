@@ -32,104 +32,46 @@
     position: relative;
   }
 
-  /* ── BLURRY ROOM BACKGROUND ── */
   .bg-photo {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    /* Cozy room built with CSS gradients layered to simulate a warm blurry room photo */
+    position: fixed; inset: 0; z-index: 0;
     background:
-      /* warm lamp glow top-right */
       radial-gradient(ellipse at 88% 5%, rgba(255,200,80,0.55) 0%, transparent 38%),
-      /* floor lamp glow left */
       radial-gradient(ellipse at 10% 15%, rgba(255,160,50,0.25) 0%, transparent 35%),
-      /* screen ambient light center */
       radial-gradient(ellipse at 50% 60%, rgba(30,60,30,0.18) 0%, transparent 50%),
-      /* floor darkness */
       radial-gradient(ellipse at 50% 110%, rgba(0,0,0,0.7) 0%, transparent 55%),
-      /* base room tones: warm wall, darker floor */
-      linear-gradient(
-        to bottom,
-        #2a1e0e 0%,
-        #3d2a12 18%,
-        #4a3318 35%,
-        #2e1e0a 52%,
-        #1a0f04 68%,
-        #0e0804 100%
-      );
-    filter: blur(0px);
+      linear-gradient(to bottom, #2a1e0e 0%, #3d2a12 18%, #4a3318 35%, #2e1e0a 52%, #1a0f04 68%, #0e0804 100%);
   }
-
-  /* Faux wallpaper texture on upper wall area */
   .bg-photo::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    bottom: 45%;
+    content: ''; position: absolute; inset: 0; bottom: 45%;
     background-image:
-      repeating-linear-gradient(
-        0deg,
-        transparent 0px, transparent 38px,
-        rgba(255,220,140,0.03) 38px, rgba(255,220,140,0.03) 40px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent 0px, transparent 58px,
-        rgba(255,220,140,0.025) 58px, rgba(255,220,140,0.025) 60px
-      );
+      repeating-linear-gradient(0deg, transparent 0px, transparent 38px, rgba(255,220,140,0.03) 38px, rgba(255,220,140,0.03) 40px),
+      repeating-linear-gradient(90deg, transparent 0px, transparent 58px, rgba(255,220,140,0.025) 58px, rgba(255,220,140,0.025) 60px);
   }
-
-  /* Carpet texture on lower floor area */
   .bg-photo::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    top: 55%;
+    content: ''; position: absolute; inset: 0; top: 55%;
     background:
       repeating-linear-gradient(90deg, transparent 0px, transparent 8px, rgba(0,0,0,0.08) 8px, rgba(0,0,0,0.08) 9px),
-      repeating-linear-gradient(0deg,  transparent 0px, transparent 8px, rgba(0,0,0,0.08) 8px, rgba(0,0,0,0.08) 9px);
+      repeating-linear-gradient(0deg, transparent 0px, transparent 8px, rgba(0,0,0,0.08) 8px, rgba(0,0,0,0.08) 9px);
     background-color: rgba(80,30,8,0.4);
   }
 
-  /* Blurry-photo vignette to pull it all together */
   .bg-vignette {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
+    position: fixed; inset: 0; z-index: 0;
     background: radial-gradient(ellipse at 50% 45%, transparent 30%, rgba(0,0,0,0.55) 100%);
     pointer-events: none;
   }
 
-  /* Scanline overlay */
   .scanlines {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.07) 2px,
-      rgba(0,0,0,0.07) 4px
-    );
+    position: fixed; inset: 0; z-index: 1;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
     pointer-events: none;
   }
 
-  /* ── LAMP ── */
   .lamp {
-    position: fixed;
-    top: 0; right: 8%;
-    z-index: 2;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    position: fixed; top: 0; right: 8%; z-index: 2;
+    pointer-events: none; display: flex; flex-direction: column; align-items: center;
   }
-  .lamp-cord {
-    width: 2px; height: 100px;
-    background: linear-gradient(to bottom, #4a2a10, #2a1408);
-    margin: 0 auto;
-  }
+  .lamp-cord { width: 2px; height: 100px; background: linear-gradient(to bottom, #4a2a10, #2a1408); margin: 0 auto; }
   .lamp-shade {
     width: 70px; height: 44px;
     background: linear-gradient(to bottom, #b89018, #e0b030, #f0c840);
@@ -137,269 +79,172 @@
     box-shadow: 0 0 0 2px #7a5010, 0 0 30px rgba(255,200,60,0.4);
   }
   .lamp-cone {
-    position: fixed;
-    top: 0; right: 0%;
-    width: 55%; height: 100%;
+    position: fixed; top: 0; right: 0%; width: 55%; height: 100%;
     background: radial-gradient(ellipse at 85% 8%, rgba(255,190,70,0.14) 0%, rgba(255,150,30,0.05) 35%, transparent 60%);
-    pointer-events: none;
-    z-index: 1;
+    pointer-events: none; z-index: 1;
   }
 
-  /* ── SCENE ── */
-  .scene {
-    position: relative;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  .scene { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; }
 
-  /* ── TV CABINET ── */
   .cabinet {
     width: min(780px, 93vw);
     background: linear-gradient(160deg, var(--wood-light) 0%, var(--wood) 40%, #2a1506 100%);
     border-radius: 18px 18px 12px 12px;
     padding: 24px 28px 28px;
-    box-shadow:
-      0 0 0 3px #6b3a12,
-      0 0 0 5px #2a1506,
-      0 30px 80px rgba(0,0,0,0.9),
-      0 0 80px rgba(232,168,76,0.07);
+    box-shadow: 0 0 0 3px #6b3a12, 0 0 0 5px #2a1506, 0 30px 80px rgba(0,0,0,0.9), 0 0 80px rgba(232,168,76,0.07);
     position: relative;
   }
   .cabinet::after {
-    content: '';
-    position: absolute; inset: 0;
-    border-radius: inherit;
-    background: repeating-linear-gradient(
-      100deg,
-      transparent 0px,
-      rgba(255,255,255,0.015) 1px,
-      transparent 2px,
-      transparent 6px
-    );
+    content: ''; position: absolute; inset: 0; border-radius: inherit;
+    background: repeating-linear-gradient(100deg, transparent 0px, rgba(255,255,255,0.015) 1px, transparent 2px, transparent 6px);
     pointer-events: none;
   }
 
   .brand {
-    text-align: center;
-    margin-bottom: 14px;
-    font-family: 'VT323', monospace;
-    font-size: 15px;
-    letter-spacing: 8px;
-    color: var(--amber-dim);
-    text-transform: uppercase;
-    opacity: 0.75;
+    text-align: center; margin-bottom: 14px;
+    font-family: 'VT323', monospace; font-size: 15px;
+    letter-spacing: 8px; color: var(--amber-dim); text-transform: uppercase; opacity: 0.75;
   }
 
-  /* ── SCREEN BEZEL ── */
   .bezel {
-    background: #0a0a0a;
-    border-radius: 14px;
-    padding: 14px;
-    box-shadow:
-      inset 0 0 30px rgba(0,0,0,0.8),
-      0 0 0 2px #111,
-      0 4px 20px rgba(0,0,0,0.6);
+    background: #0a0a0a; border-radius: 14px; padding: 14px;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 0 0 2px #111, 0 4px 20px rgba(0,0,0,0.6);
   }
 
-  /* Screen fills the bezel completely */
   .screen-wrap {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: var(--screen-bg);
-    border-radius: 6px;
-    overflow: hidden;
+    position: relative; width: 100%; aspect-ratio: 16/9;
+    background: var(--screen-bg); border-radius: 6px; overflow: hidden;
   }
-
   .screen-wrap::after {
-    content: '';
-    position: absolute; inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.55) 100%);
     pointer-events: none; z-index: 10;
   }
   .screen-wrap::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(
-      0deg, transparent, transparent 3px,
-      rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px
-    );
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px);
     pointer-events: none; z-index: 11;
   }
 
-  /* Each player fills the screen absolutely */
-  .player {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
+  .player { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.2s; }
   .player.active { opacity: 1; }
-
-  /* Make the iframe inside each player fill it */
-  .player iframe {
-    position: absolute;
-    inset: 0;
-    width: 100% !important;
-    height: 100% !important;
-  }
+  .player iframe { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
 
   .static-overlay {
-    position: absolute; inset: 0;
-    background: black;
+    position: absolute; inset: 0; background: black;
     display: flex; align-items: center; justify-content: center;
     opacity: 0; transition: opacity 0.1s; z-index: 9;
   }
   .static-overlay.show { opacity: 1; }
   .static-overlay img { width: 120%; height: 120%; object-fit: cover; }
 
+  /* OSD */
+  .osd {
+    position: absolute; top: 10px; right: 12px; z-index: 15;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
+  }
+  .osd.show { opacity: 1; }
+  .osd-ch {
+    font-family: 'VT323', monospace; font-size: 30px; color: #ffffff;
+    text-shadow: 0 0 8px rgba(255,255,255,0.6), 2px 2px 0 rgba(0,0,0,0.9);
+    line-height: 1; letter-spacing: 2px;
+  }
+  .osd-vol {
+    font-family: 'VT323', monospace; font-size: 13px;
+    color: rgba(255,255,200,0.9); text-shadow: 1px 1px 0 rgba(0,0,0,0.9);
+    letter-spacing: 1px; display: flex; align-items: center; gap: 5px;
+  }
+  .osd-vol-bar { display: flex; gap: 2px; }
+  .osd-vol-bar span {
+    display: inline-block; width: 5px; height: 8px;
+    background: rgba(255,255,200,0.2); border-radius: 1px;
+  }
+  .osd-vol-bar span.lit {
+    background: rgba(255,255,140,0.95);
+    box-shadow: 0 0 4px rgba(255,255,80,0.7);
+  }
+
+  /* Distortion */
+  .distortion { position: absolute; inset: 0; z-index: 8; pointer-events: none; opacity: 0; }
+  .distortion.active { animation: distort 0.5s steps(1) forwards; }
+  @keyframes distort {
+    0%   { opacity:1; background: repeating-linear-gradient(0deg, rgba(255,255,255,0.07) 0px, rgba(255,255,255,0.07) 2px, transparent 2px, transparent 7px); transform: translateY(0); filter: brightness(1); }
+    12%  { opacity:1; transform: translateY(-5px) skewX(-1.2deg); background: repeating-linear-gradient(0deg, rgba(255,255,255,0.13) 0px, rgba(255,255,255,0.13) 3px, transparent 3px, transparent 9px); filter: brightness(1.5); }
+    24%  { opacity:1; transform: translateY(4px) skewX(0.7deg); background: repeating-linear-gradient(0deg, rgba(0,0,0,0.35) 0px, rgba(0,0,0,0.35) 4px, transparent 4px, transparent 11px); filter: brightness(0.5); }
+    38%  { opacity:1; transform: translateY(-2px) skewX(-0.4deg); filter: brightness(1.3) hue-rotate(15deg); }
+    55%  { opacity:1; transform: translateY(1px); background: repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 2px, transparent 2px, transparent 8px); filter: brightness(1.0); }
+    75%  { opacity:0.5; transform: none; filter: brightness(0.95); }
+    100% { opacity:0; transform: none; filter: none; }
+  }
+
   .off-screen {
-    position: absolute; inset: 0;
-    background: #020202;
+    position: absolute; inset: 0; background: #020202;
     display: flex; align-items: center; justify-content: center;
     z-index: 20; transition: opacity 0.4s;
   }
   .off-screen.hidden { opacity: 0; pointer-events: none; }
   .off-dot {
-    width: 3px; height: 3px;
-    background: white; border-radius: 50%;
-    box-shadow: 0 0 6px white;
-    animation: dotfade 0.4s forwards;
+    width: 3px; height: 3px; background: white; border-radius: 50%;
+    box-shadow: 0 0 6px white; animation: dotfade 0.4s forwards;
   }
   @keyframes dotfade {
     from { opacity:1; transform:scaleX(40) scaleY(2); }
     to   { opacity:0; transform:scaleX(0) scaleY(0); }
   }
 
-  /* ── CONTROLS ── */
   .controls-panel {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 18px;
-    gap: 12px;
-    flex-wrap: wrap;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 18px; gap: 12px; flex-wrap: wrap;
   }
 
   .channels { display: flex; flex-direction: column; gap: 6px; }
-  .ch-label {
-    font-family: 'VT323', monospace;
-    font-size: 10px; color: var(--amber-dim);
-    letter-spacing: 3px; text-transform: uppercase;
-    margin-bottom: 2px;
-  }
+  .ch-label { font-family: 'VT323', monospace; font-size: 10px; color: var(--amber-dim); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 2px; }
 
   .ch-btn {
     display: flex; align-items: center; gap: 8px;
-    background: var(--btn);
-    border: 1px solid #3a1f08;
-    border-radius: 6px;
-    color: #c8954a;
-    font-family: 'VT323', monospace;
-    font-size: 17px; letter-spacing: 1px;
-    padding: 6px 12px;
-    cursor: pointer; transition: all 0.15s;
-    white-space: nowrap;
+    background: var(--btn); border: 1px solid #3a1f08; border-radius: 6px;
+    color: #c8954a; font-family: 'VT323', monospace; font-size: 17px;
+    letter-spacing: 1px; padding: 6px 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
   }
-  .ch-btn:hover {
-    background: var(--btn-hover); color: var(--glow);
-    border-color: var(--amber-dim);
-    box-shadow: 0 0 8px rgba(232,168,76,0.2);
-  }
-  .ch-btn.active-ch {
-    background: #2d1a06; color: var(--glow);
-    border-color: var(--amber);
-    box-shadow: 0 0 12px rgba(232,168,76,0.3);
-  }
+  .ch-btn:hover { background: var(--btn-hover); color: var(--glow); border-color: var(--amber-dim); box-shadow: 0 0 8px rgba(232,168,76,0.2); }
+  .ch-btn.active-ch { background: #2d1a06; color: var(--glow); border-color: var(--amber); box-shadow: 0 0 12px rgba(232,168,76,0.3); }
   .ch-num { font-size: 12px; color: var(--amber-dim); min-width: 18px; }
 
   .center-controls {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 14px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    margin-left: auto; padding-right: 8px;
   }
 
   .power-btn {
-    width: 54px; height: 54px;
-    border-radius: 50%;
+    width: 54px; height: 54px; border-radius: 50%;
     border: 2px solid #5c3214;
     background: radial-gradient(circle at 40% 35%, #2a1508, #0e0704);
-    color: #7a4020; font-size: 20px;
-    cursor: pointer; transition: all 0.2s;
+    color: #7a4020; font-size: 20px; cursor: pointer; transition: all 0.2s;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 4px 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
   }
-  .power-btn:hover {
-    border-color: var(--amber); color: var(--glow);
-    box-shadow: 0 0 20px rgba(232,168,76,0.4), 0 4px 12px rgba(0,0,0,0.6);
-  }
-  .power-btn.on {
-    border-color: #4aff7a; color: var(--green-glow);
-    box-shadow: 0 0 16px rgba(26,255,74,0.35), 0 4px 12px rgba(0,0,0,0.6);
-  }
+  .power-btn:hover { border-color: var(--amber); color: var(--glow); box-shadow: 0 0 20px rgba(232,168,76,0.4), 0 4px 12px rgba(0,0,0,0.6); }
+  .power-btn.on { border-color: #4aff7a; color: var(--green-glow); box-shadow: 0 0 16px rgba(26,255,74,0.35), 0 4px 12px rgba(0,0,0,0.6); }
 
-  .vol-group {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 5px;
-  }
-  .vol-label {
-    font-family: 'VT323', monospace;
-    font-size: 11px; color: var(--amber-dim);
-    letter-spacing: 3px; text-transform: uppercase;
-  }
+  .vol-group { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .vol-label { font-family: 'VT323', monospace; font-size: 11px; color: var(--amber-dim); letter-spacing: 3px; text-transform: uppercase; }
 
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 110px; height: 4px;
-    border-radius: 2px; outline: none;
-  }
+  input[type=range] { -webkit-appearance: none; width: 110px; height: 4px; border-radius: 2px; outline: none; }
   input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border-radius: 50%;
+    -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
     background: radial-gradient(circle at 40% 35%, var(--glow), var(--amber-dim));
-    border: 2px solid var(--amber);
-    cursor: pointer;
-    box-shadow: 0 0 6px rgba(232,168,76,0.5);
+    border: 2px solid var(--amber); cursor: pointer; box-shadow: 0 0 6px rgba(232,168,76,0.5);
   }
 
-  .indicators {
-    display: flex; flex-direction: column;
-    gap: 8px; align-items: center;
-  }
-  .indicator {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #1a0a04; border: 1px solid #3a1a08;
-    box-shadow: inset 0 0 3px rgba(0,0,0,0.8);
-  }
-  .indicator.on {
-    background: var(--green-glow);
-    box-shadow: 0 0 8px rgba(26,255,74,0.8);
-  }
-  .indicator.amber-pulse {
-    background: var(--amber);
-    box-shadow: 0 0 8px rgba(232,168,76,0.8);
-    animation: blink 1.8s ease-in-out infinite;
-  }
+  .indicators { display: flex; flex-direction: row; gap: 6px; align-items: center; justify-content: center; }
+  .indicator { width: 8px; height: 8px; border-radius: 50%; background: #1a0a04; border: 1px solid #3a1a08; box-shadow: inset 0 0 3px rgba(0,0,0,0.8); }
+  .indicator.on { background: var(--green-glow); box-shadow: 0 0 8px rgba(26,255,74,0.8); }
+  .indicator.amber-pulse { background: var(--amber); box-shadow: 0 0 8px rgba(232,168,76,0.8); animation: blink 1.8s ease-in-out infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
-  .stand {
-    width: 60%; height: 14px;
-    background: linear-gradient(to bottom, var(--wood) 0%, #1e0e04 100%);
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.7);
-    margin: 0 auto;
-  }
-  .stand-leg {
-    width: 40%; height: 8px;
-    background: linear-gradient(to bottom, #1e0e04, #120804);
-    margin: 0 auto;
-    border-radius: 0 0 6px 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-  }
+  .stand { width: 60%; height: 14px; background: linear-gradient(to bottom, var(--wood) 0%, #1e0e04 100%); border-radius: 0 0 8px 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.7); margin: 0 auto; }
+  .stand-leg { width: 40%; height: 8px; background: linear-gradient(to bottom, #1e0e04, #120804); margin: 0 auto; border-radius: 0 0 6px 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
 </style>
 </head>
 <body>
@@ -407,181 +252,131 @@
 <div class="bg-photo"></div>
 <div class="bg-vignette"></div>
 <div class="scanlines"></div>
-
-<div class="lamp">
-  <div class="lamp-cord"></div>
-  <div class="lamp-shade"></div>
-</div>
+<div class="lamp"><div class="lamp-cord"></div><div class="lamp-shade"></div></div>
 <div class="lamp-cone"></div>
 
 <div class="scene">
   <div class="cabinet">
     <div class="brand">◈ Halabuda TV ◈</div>
-
     <div class="bezel">
       <div class="screen-wrap">
         <div id="player0" class="player active"></div>
         <div id="player1" class="player"></div>
         <div id="player2" class="player"></div>
-        <div class="static-overlay" id="static">
-          <img src="static.gif" alt="">
-        </div>
+        <div class="static-overlay" id="static"><img src="static.gif" alt=""></div>
         <div class="off-screen" id="offScreen"></div>
+        <div class="distortion" id="distortion"></div>
+        <div class="osd" id="osd">
+          <div class="osd-ch" id="osdCh">CH 01</div>
+          <div class="osd-vol">VOL <div class="osd-vol-bar" id="osdVolBar"></div></div>
+        </div>
       </div>
     </div>
-
     <div class="controls-panel">
       <div class="channels">
         <div class="ch-label">Канали</div>
-        <button class="ch-btn active-ch" id="ch0" onclick="switchChannel(0)">
-          <span class="ch-num">01</span> Телепередачі
-        </button>
-        <button class="ch-btn" id="ch1" onclick="switchChannel(1)">
-          <span class="ch-num">02</span> Радіо Україна
-        </button>
-        <button class="ch-btn" id="ch2" onclick="switchChannel(2)">
-          <span class="ch-num">03</span> Музика
-        </button>
+        <button class="ch-btn active-ch" id="ch0" onclick="switchChannel(0)"><span class="ch-num">01</span> Телепередачі</button>
+        <button class="ch-btn" id="ch1" onclick="switchChannel(1)"><span class="ch-num">02</span> Радіо Україна</button>
+        <button class="ch-btn" id="ch2" onclick="switchChannel(2)"><span class="ch-num">03</span> Музика</button>
       </div>
-
       <div class="center-controls">
-        <button class="power-btn" id="power" title="Power">⏻</button>
         <div class="vol-group">
           <div class="vol-label">Гучність</div>
           <input type="range" id="volume" min="0" max="100" value="40">
         </div>
-      </div>
-
-      <div class="indicators">
-        <div class="indicator" id="pwrLight"></div>
-        <div class="indicator amber-pulse" id="sigLight" style="display:none"></div>
+        <div class="indicators">
+          <div class="indicator" id="pwrLight"></div>
+          <div class="indicator amber-pulse" id="sigLight" style="display:none"></div>
+        </div>
+        <button class="power-btn" id="power" title="Power">⏻</button>
       </div>
     </div>
   </div>
-
   <div class="stand"></div>
   <div class="stand-leg"></div>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-// ── AUDIO ENGINE ──
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let actx = null;
-
-function getACtx() {
-  if (!actx) actx = new AudioCtx();
-  return actx;
-}
+function getACtx() { if (!actx) actx = new AudioCtx(); return actx; }
 
 function playPowerOn() {
-  const ctx = getACtx();
-  // Low hum that rises — old CRT waking up
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(40, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.6);
-  gain.gain.setValueAtTime(0.0, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.05);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.9);
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + 0.9);
-
-  // Crackle
-  playStatic(ctx, 0.08, 0.25);
+  const ctx = getACtx(); const t = ctx.currentTime;
+  const osc = ctx.createOscillator(), gain = ctx.createGain(), filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass'; filter.frequency.value = 400;
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(55, t); osc.frequency.exponentialRampToValueAtTime(120, t + 1.2);
+  gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.12, t + 0.3); gain.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
+  osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+  osc.start(t); osc.stop(t + 1.8);
+  const whine = ctx.createOscillator(), wgain = ctx.createGain();
+  whine.type = 'sine'; whine.frequency.value = 15600;
+  wgain.gain.setValueAtTime(0, t); wgain.gain.linearRampToValueAtTime(0.04, t + 0.6); wgain.gain.exponentialRampToValueAtTime(0.001, t + 2.0);
+  whine.connect(wgain); wgain.connect(ctx.destination);
+  whine.start(t + 0.2); whine.stop(t + 2.0);
+  playSoftCrackle(ctx, 0.1, 0.3);
 }
 
 function playPowerOff() {
-  const ctx = getACtx();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(160, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.5);
-  gain.gain.setValueAtTime(0.18, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + 0.5);
+  const ctx = getACtx(); const t = ctx.currentTime;
+  const osc = ctx.createOscillator(), gain = ctx.createGain(), filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass'; filter.frequency.value = 300; osc.type = 'sine';
+  osc.frequency.setValueAtTime(110, t); osc.frequency.exponentialRampToValueAtTime(30, t + 0.8);
+  gain.gain.setValueAtTime(0.1, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+  osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+  osc.start(t); osc.stop(t + 0.9);
+  playSoftCrackle(ctx, 0, 0.15);
 }
 
 function playChannelSwitch() {
-  const ctx = getACtx();
-  // Sharp click
-  const bufSize = ctx.sampleRate * 0.04;
-  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-  const data = buf.getChannelData(0);
-  for (let i = 0; i < bufSize; i++) {
-    data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
-  }
-  const src = ctx.createBufferSource();
-  const gain = ctx.createGain();
-  src.buffer = buf;
-  src.connect(gain); gain.connect(ctx.destination);
-  gain.gain.setValueAtTime(0.5, ctx.currentTime);
-  src.start(ctx.currentTime);
-
-  // Static burst
-  playStatic(ctx, 0.2, 0.45);
+  const ctx = getACtx(); const t = ctx.currentTime;
+  const thunk = ctx.createOscillator(), tgain = ctx.createGain();
+  thunk.type = 'sine';
+  thunk.frequency.setValueAtTime(180, t); thunk.frequency.exponentialRampToValueAtTime(60, t + 0.08);
+  tgain.gain.setValueAtTime(0.25, t); tgain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+  thunk.connect(tgain); tgain.connect(ctx.destination);
+  thunk.start(t); thunk.stop(t + 0.12);
+  playSoftCrackle(ctx, 0.05, 0.35);
 }
 
-function playStatic(ctx, startTime, duration) {
+function playSoftCrackle(ctx, startTime, duration) {
+  const t = ctx.currentTime + startTime;
   const bufSize = Math.floor(ctx.sampleRate * duration);
   const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
   const data = buf.getChannelData(0);
-  for (let i = 0; i < bufSize; i++) {
-    data[i] = (Math.random() * 2 - 1) * 0.35;
-  }
-  const src = ctx.createBufferSource();
-  const gain = ctx.createGain();
-  const filter = ctx.createBiquadFilter();
-  filter.type = 'bandpass';
-  filter.frequency.value = 3000;
-  filter.Q.value = 0.5;
-  src.buffer = buf;
-  src.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
-  gain.gain.setValueAtTime(0.0, ctx.currentTime + startTime);
-  gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + startTime + 0.05);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
-  src.start(ctx.currentTime + startTime);
-  src.stop(ctx.currentTime + startTime + duration);
+  for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(Math.random(), 3) * 0.4;
+  const src = ctx.createBufferSource(), gain = ctx.createGain(), lpf = ctx.createBiquadFilter();
+  lpf.type = 'lowpass'; lpf.frequency.value = 2200;
+  src.buffer = buf; src.connect(lpf); lpf.connect(gain); gain.connect(ctx.destination);
+  gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.18, t + 0.04); gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+  src.start(t); src.stop(t + duration);
 }
 
 let volKnobTimeout = null;
 function playVolumeKnob() {
-  const ctx = getACtx();
-  // Soft click/crackle on vol change
-  const bufSize = Math.floor(ctx.sampleRate * 0.03);
+  const ctx = getACtx(); const t = ctx.currentTime;
+  const bufSize = Math.floor(ctx.sampleRate * 0.015);
   const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
   const data = buf.getChannelData(0);
-  for (let i = 0; i < bufSize; i++) {
-    data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize) * 0.3;
-  }
-  const src = ctx.createBufferSource();
-  const gain = ctx.createGain();
-  src.buffer = buf;
-  src.connect(gain); gain.connect(ctx.destination);
-  gain.gain.value = 0.4;
-  src.start(ctx.currentTime);
+  for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize) * 0.15;
+  const src = ctx.createBufferSource(), gain = ctx.createGain();
+  src.buffer = buf; src.connect(gain); gain.connect(ctx.destination);
+  gain.gain.value = 0.3; src.start(t);
 }
 
-// ── YOUTUBE ──
 const PLAYLISTS = [
   "PL721NrD9dr5IacSk-nD3WFZOfQhyBnyra",
   "PL721NrD9dr5ILoJG8LIjC8XtnLpgrWwNX",
   "PL721NrD9dr5KTCet9ru6BInjlRn7Q4yHa"
 ];
-
 let players = [], activeChannel = 0, started = false;
 
 const volSlider = document.getElementById("volume");
-
 function updateSliderBg() {
   const pct = volSlider.value + "%";
-  volSlider.style.background =
-    `linear-gradient(to right, #e8a84c 0%, #e8a84c ${pct}, #2a1508 ${pct})`;
+  volSlider.style.background = `linear-gradient(to right, #e8a84c 0%, #e8a84c ${pct}, #2a1508 ${pct})`;
 }
 volSlider.addEventListener("input", updateSliderBg);
 updateSliderBg();
@@ -589,23 +384,53 @@ updateSliderBg();
 function onYouTubeIframeAPIReady() {
   PLAYLISTS.forEach((id, index) => {
     players[index] = new YT.Player("player" + index, {
-      width: "100%",
-      height: "100%",
-      playerVars: {
-        autoplay: 0, controls: 0, rel: 0,
-        listType: "playlist", list: id,
-        loop: 1, playlist: id,
-        modestbranding: 1,
-        iv_load_policy: 3
-      },
+      width: "100%", height: "100%",
+      playerVars: { autoplay: 0, controls: 0, rel: 0, listType: "playlist", list: id, loop: 1, playlist: id, modestbranding: 1, iv_load_policy: 3 },
       events: {
         onReady: e => {
           e.target.setVolume(40);
-          if (index !== activeChannel) e.target.mute();
+          e.target.mute();
+          e.target.playVideoAt(Math.floor(Math.random() * 50));
+          setTimeout(() => {
+            try {
+              const dur = e.target.getDuration();
+              if (dur > 60) e.target.seekTo(Math.floor(Math.random() * (dur - 30)), true);
+            } catch(err) {}
+            e.target.pauseVideo();
+          }, 1800);
         }
       }
     });
   });
+}
+
+// OSD
+const CHANNEL_NAMES = ["CH 01", "CH 02", "CH 03"];
+const OSD_BARS = 12;
+let osdTimeout = null;
+const osdVolBar = document.getElementById("osdVolBar");
+for (let i = 0; i < OSD_BARS; i++) osdVolBar.appendChild(document.createElement("span"));
+
+function updateOsdVolBar(val) {
+  const lit = Math.round((val / 100) * OSD_BARS);
+  Array.from(osdVolBar.children).forEach((s, i) => s.classList.toggle("lit", i < lit));
+}
+
+function showOsd(channel, vol) {
+  const osd = document.getElementById("osd");
+  document.getElementById("osdCh").textContent = CHANNEL_NAMES[channel];
+  updateOsdVolBar(vol);
+  osd.classList.add("show");
+  clearTimeout(osdTimeout);
+  osdTimeout = setTimeout(() => osd.classList.remove("show"), 2200);
+}
+
+function triggerDistortion() {
+  const d = document.getElementById("distortion");
+  d.classList.remove("active");
+  void d.offsetWidth;
+  d.classList.add("active");
+  setTimeout(() => d.classList.remove("active"), 520);
 }
 
 function showStatic() {
@@ -615,39 +440,41 @@ function showStatic() {
 }
 
 function setActiveChBtn(index) {
-  document.querySelectorAll(".ch-btn").forEach((b, i) => {
-    b.classList.toggle("active-ch", i === index);
-  });
+  document.querySelectorAll(".ch-btn").forEach((b, i) => b.classList.toggle("active-ch", i === index));
 }
 
 function switchChannel(index) {
   if (!started || index === activeChannel) return;
-  playChannelSwitch();
-  showStatic();
+  playChannelSwitch(); showStatic(); triggerDistortion();
   document.getElementById("player" + activeChannel).classList.remove("active");
   document.getElementById("player" + index).classList.add("active");
   players.forEach((p, i) => {
-    if (i === index) { p.unMute(); p.setVolume(volSlider.value); }
-    else p.mute();
+    if (i === index) { p.unMute(); p.setVolume(volSlider.value); p.playVideo(); }
+    else { p.mute(); p.pauseVideo(); }
   });
   activeChannel = index;
   setActiveChBtn(index);
+  showOsd(index, parseInt(volSlider.value));
 }
 
-const powerBtn  = document.getElementById("power");
-const pwrLight  = document.getElementById("pwrLight");
-const sigLight  = document.getElementById("sigLight");
+const powerBtn = document.getElementById("power");
+const pwrLight = document.getElementById("pwrLight");
+const sigLight = document.getElementById("sigLight");
 const offScreen = document.getElementById("offScreen");
 
 powerBtn.addEventListener("click", function () {
   if (!started) {
     playPowerOn();
     offScreen.classList.add("hidden");
-    players.forEach((p, i) => { p.playVideo(); if (i !== activeChannel) p.mute(); });
+    players.forEach((p, i) => {
+      if (i === activeChannel) { p.unMute(); p.setVolume(volSlider.value); p.playVideo(); }
+      else p.mute();
+    });
     powerBtn.classList.add("on");
     pwrLight.classList.add("on");
     sigLight.style.display = "block";
     started = true;
+    showOsd(activeChannel, parseInt(volSlider.value));
   } else {
     playPowerOff();
     players.forEach(p => p.pauseVideo());
@@ -661,12 +488,11 @@ powerBtn.addEventListener("click", function () {
   }
 });
 
-// Volume: sound + update player
 volSlider.addEventListener("input", function () {
-  // Throttle knob sound so it doesn't fire every pixel
   clearTimeout(volKnobTimeout);
-  volKnobTimeout = setTimeout(playVolumeKnob, 60);
+  volKnobTimeout = setTimeout(playVolumeKnob, 50);
   if (started) players[activeChannel].setVolume(this.value);
+  showOsd(activeChannel, parseInt(this.value));
 });
 </script>
 </body>
