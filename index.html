@@ -246,6 +246,11 @@
   .stand { width: 60%; height: 14px; background: linear-gradient(to bottom, var(--wood) 0%, #1e0e04 100%); border-radius: 0 0 8px 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.7); margin: 0 auto; }
   .stand-leg { width: 40%; height: 8px; background: linear-gradient(to bottom, #1e0e04, #120804); margin: 0 auto; border-radius: 0 0 6px 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
 
+  /* Hide lamp + cone + switch when screen is too narrow to fit them beside the TV */
+  @media (max-width: 960px) {
+    .lamp, .lamp-cone { display: none !important; }
+  }
+
   /* ── TV SCREEN GLOW on wall ── */
   .tv-glow {
     position: fixed; inset: 0; z-index: 0;
@@ -378,7 +383,11 @@
 <script>
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let actx = null;
-function getACtx() { if (!actx) actx = new AudioCtx(); return actx; }
+function getACtx() {
+  if (!actx) actx = new AudioCtx();
+  if (actx.state === 'suspended') actx.resume();
+  return actx;
+}
 
 function playPowerOn() {
   const ctx = getACtx(); const t = ctx.currentTime;
