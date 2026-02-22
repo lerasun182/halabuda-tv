@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Halabuda TV</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --amber: #e8a84c;
+    --amber-dim: #9c6a1e;
+    --glow: #f5c76a;
+    --bg-dark: #0d0a06;
+    --panel: #1a1208;
+    --wood: #3b200a;
+    --wood-light: #5c3214;
+    --btn: #221508;
+    --btn-hover: #3d2410;
+    --screen-bg: #040c04;
+    --green-glow: #1aff4a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-dark);
+    font-family: 'Courier Prime', monospace;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Scanline overlay on entire page */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* ── LAMP (behind everything) ── */
+  .lamp {
+    position: fixed;
+    top: 0;
+    right: 8%;
+    z-index: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lamp-cord {
+    width: 2px;
+    height: 100px;
+    background: linear-gradient(to bottom, #4a2a10, #2a1408);
+    margin: 0 auto;
+  }
+
+  .lamp-shade {
+    width: 70px;
+    height: 44px;
+    background: linear-gradient(to bottom, #b89018, #e0b030, #f0c840);
+    clip-path: polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%);
+    box-shadow: 0 0 0 2px #7a5010;
+    position: relative;
+  }
+
+  /* The bulb warm cone of light cast downward on the wall */
+  .lamp-cone {
+    position: fixed;
+    top: 0;
+    right: 0%;
+    width: 55%;
+    height: 100%;
+    background: radial-gradient(ellipse at 85% 8%, rgba(255,190,70,0.13) 0%, rgba(255,160,40,0.06) 30%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Ambient room glow from screen */
+  .room-glow {
+    position: fixed;
+    bottom: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(232,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .scene {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ── TV CABINET ── */
+  .cabinet {
+    width: min(760px, 92vw);
+    background: linear-gradient(160deg, var(--wood-light) 0%, var(--wood) 40%, #2a1506 100%);
+    border-radius: 18px 18px 12px 12px;
+    padding: 28px 32px 32px;
+    box-shadow:
+      0 0 0 3px #6b3a12,
+      0 0 0 5px #2a1506,
+      0 30px 80px rgba(0,0,0,0.9),
+      0 0 60px rgba(232,168,76,0.06);
+    position: relative;
+  }
+
+  /* Wood grain texture */
+  .cabinet::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: repeating-linear-gradient(
+      100deg,
+      transparent 0px,
+      rgba(255,255,255,0.015) 1px,
+      transparent 2px,
+      transparent 6px
+    );
+    pointer-events: none;
+  }
+
+  /* ── BRAND BADGE ── */
+  .brand {
+    text-align: center;
+    margin-bottom: 14px;
+    font-family: 'VT323', monospace;
+    font-size: 15px;
+    letter-spacing: 8px;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  /* ── SCREEN BEZEL ── */
+  .bezel {
+    background: #0a0a0a;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow:
+      inset 0 0 30px rgba(0,0,0,0.8),
+      0 0 0 2px #111,
+      0 4px 20px rgba(0,0,0,0.6);
+    position: relative;
+  }
+
+  .screen-wrap {
+    position: relative;
+    background: var(--screen-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    max-height: 380px;
+  }
+
+  /* CRT curvature vignette */
+  .screen-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Scanlines on screen */
+  .screen-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.12) 3px,
+      rgba(0,0,0,0.12) 4px
+    );
+    pointer-events: none;
+    z-index: 11;
+  }
+
+  .player {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .player.active { opacity: 1; }
+
+  .static-overlay {
+    position: absolute;
+    inset: 0;
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.12s;
+    z-index: 9;
+  }
+  .static-overlay.show { opacity: 1; }
+  .static-overlay img {
+    width: 120%;
+    height: 120%;
+    object-fit: cover;
+  }
+
+  /* OFF screen */
+  .off-screen {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, #0a1a0a 0%, #000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    transition: opacity 0.4s;
+  }
+  .off-screen.hidden { opacity: 0; pointer-events: none; }
+  .off-dot {
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 6px white;
+    animation: dotfade 0.4s forwards;
+  }
+  @keyframes dotfade { from { opacity:1; transform:scaleX(40) scaleY(2); } to { opacity:0; transform:scaleX(0) scaleY(0); } }
+
+  /* ── CONTROLS PANEL ── */
+  .controls-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 18px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* Channel buttons */
+  .channels {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ch-label {
+    font-family: 'VT323', monospace;
+    font-size: 10px;
+    color: var(--amber-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .ch-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--btn);
+    border: 1px solid #3a1f08;
+    border-radius: 6px;
+    color: #c8954a;
+    font-family: 'VT323', monospace;
+    font-size: 17px;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .ch-btn:hover {
+    background: var(--btn-hover);
+    color: var(--glow);
+    border-color: var(--amber-dim);
+    box-shadow: 0 0 8px rgba(232,168,76,0.2);
+  }
+
+  .ch-btn.active-ch {
+    background: #2d1a06;
+    color: var(--glow);
+    border-color: var(--amber);
+    box-shadow: 0 0 12px rgba(232,168,76,0.3);
+  }
+
+  .ch-num {
+    font-size: 12px;
+    color: var(--amber-dim);
+    min-width: 18px;
+  }
+
+  /* Center: power + volume */
+  .center-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .power-btn {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 2px solid #5c3214;
+    background: radial-gradient(circle at 40% 35%, #2a1508, #0e0704);
+    color: #7a4020;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .power-btn:hover {
+    border-color: var(--amber);
+    color: var(--glow);
+    box-shadow:
+      0 0 20px rgba(232,168,76,0.4),
+      0 4px 12px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .power-btn.on {
+    border-color: #4aff7a;
+    color: var(--green-glow);
+    box-shadow: 0 0 16px rgba(26,255,74,0.35), 0 4px 12px rgba(0,0,0,0.6);
+  }
+
+  /* Volume knob area */
+  .vol-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .vol-label {
+    font-family: 'VT323', monospace;
+    font-size: 11px;
+    color: var(--amber-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 110px;
+    height: 4px;
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, var(--glow), var(--amber-dim));
+    border: 2px solid var(--amber);
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(232,168,76,0.5);
+  }
+
+  /* Indicator lights */
+  .indicators {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1a0a04;
+    border: 1px solid #3a1a08;
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.8);
+  }
+  .indicator.on {
+    background: var(--green-glow);
+    box-shadow: 0 0 8px rgba(26,255,74,0.8);
+  }
+  .indicator.amber-pulse {
+    background: var(--amber);
+    box-shadow: 0 0 8px rgba(232,168,76,0.8);
+    animation: blink 1.8s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+  /* ── BOTTOM STAND ── */
+  .stand {
+    width: 60%;
+    height: 14px;
+    background: linear-gradient(to bottom, var(--wood) 0%, #1e0e04 100%);
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+    margin: 0 auto;
+  }
+  .stand-leg {
+    width: 40%;
+    height: 8px;
+    background: linear-gradient(to bottom, #1e0e04, #120804);
+    margin: 0 auto;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  }
+</style>
+</head>
+<body>
+
+<!-- Lamp behind everything -->
+<div class="lamp">
+  <div class="lamp-cord"></div>
+  <div class="lamp-shade"></div>
+</div>
+<div class="lamp-cone"></div>
+<div class="room-glow"></div>
+
+<div class="scene">
+  <div class="cabinet">
+    <div class="brand">◈ Halabuda TV ◈</div>
+
+    <div class="bezel">
+      <div class="screen-wrap">
+        <div id="player0" class="player active"></div>
+        <div id="player1" class="player"></div>
+        <div id="player2" class="player"></div>
+        <div class="static-overlay" id="static">
+          <img src="static.gif" alt="">
+        </div>
+        <div class="off-screen" id="offScreen"></div>
+      </div>
+    </div>
+
+    <div class="controls-panel">
+      <div class="channels">
+        <div class="ch-label">Канали</div>
+        <button class="ch-btn active-ch" id="ch0" onclick="switchChannel(0)">
+          <span class="ch-num">01</span> Телепередачі
+        </button>
+        <button class="ch-btn" id="ch1" onclick="switchChannel(1)">
+          <span class="ch-num">02</span> Радіо Україна
+        </button>
+        <button class="ch-btn" id="ch2" onclick="switchChannel(2)">
+          <span class="ch-num">03</span> Музика
+        </button>
+      </div>
+
+      <div class="center-controls">
+        <button class="power-btn" id="power" title="Power">⏻</button>
+        <div class="vol-group">
+          <div class="vol-label">Гучність</div>
+          <input type="range" id="volume" min="0" max="100" value="40">
+        </div>
+      </div>
+
+      <div class="indicators">
+        <div class="indicator" id="pwrLight"></div>
+        <div class="indicator amber-pulse" id="sigLight" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stand"></div>
+  <div class="stand-leg"></div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+const PLAYLISTS = [
+  "PL721NrD9dr5IacSk-nD3WFZOfQhyBnyra",
+  "PL721NrD9dr5ILoJG8LIjC8XtnLpgrWwNX",
+  "PL721NrD9dr5KTCet9ru6BInjlRn7Q4yHa"
+];
+
+let players = [], activeChannel = 0, started = false;
+
+const volSlider = document.getElementById("volume");
+
+function updateSliderBg() {
+  const pct = volSlider.value + "%";
+  volSlider.style.background =
+    `linear-gradient(to right, #e8a84c 0%, #e8a84c ${pct}, #2a1508 ${pct})`;
+}
+volSlider.addEventListener("input", updateSliderBg);
+updateSliderBg();
+
+function onYouTubeIframeAPIReady() {
+  PLAYLISTS.forEach((id, index) => {
+    players[index] = new YT.Player("player" + index, {
+      width: "100%", height: "100%",
+      playerVars: {
+        autoplay: 0, controls: 0, rel: 0,
+        listType: "playlist", list: id, loop: 1, playlist: id
+      },
+      events: {
+        onReady: e => {
+          e.target.setVolume(40);
+          if (index !== activeChannel) e.target.mute();
+        }
+      }
+    });
+  });
+}
+
+function showStatic() {
+  const s = document.getElementById("static");
+  s.classList.add("show");
+  setTimeout(() => s.classList.remove("show"), 500);
+}
+
+function setActiveChBtn(index) {
+  document.querySelectorAll(".ch-btn").forEach((b, i) => {
+    b.classList.toggle("active-ch", i === index);
+  });
+}
+
+function switchChannel(index) {
+  if (!started || index === activeChannel) return;
+  showStatic();
+  document.getElementById("player" + activeChannel).classList.remove("active");
+  document.getElementById("player" + index).classList.add("active");
+  players.forEach((p, i) => {
+    if (i === index) { p.unMute(); p.setVolume(volSlider.value); }
+    else p.mute();
+  });
+  activeChannel = index;
+  setActiveChBtn(index);
+}
+
+const powerBtn  = document.getElementById("power");
+const pwrLight  = document.getElementById("pwrLight");
+const sigLight  = document.getElementById("sigLight");
+const offScreen = document.getElementById("offScreen");
+
+powerBtn.addEventListener("click", function () {
+  if (!started) {
+    offScreen.classList.add("hidden");
+    players.forEach((p, i) => { p.playVideo(); if (i !== activeChannel) p.mute(); });
+    powerBtn.classList.add("on");
+    pwrLight.classList.add("on");
+    sigLight.style.display = "block";
+    started = true;
+  } else {
+    players.forEach(p => p.pauseVideo());
+    offScreen.innerHTML = '<div class="off-dot"></div>';
+    offScreen.classList.remove("hidden");
+    setTimeout(() => { offScreen.innerHTML = ''; }, 400);
+    powerBtn.classList.remove("on");
+    pwrLight.classList.remove("on");
+    sigLight.style.display = "none";
+    started = false;
+  }
+});
+
+volSlider.addEventListener("input", function () {
+  if (started) players[activeChannel].setVolume(this.value);
+});
+</script>
+</body>
+</html>
