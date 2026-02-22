@@ -343,6 +343,8 @@
         <div id="player0" class="player active"></div>
         <div id="player1" class="player"></div>
         <div id="player2" class="player"></div>
+        <div id="player3" class="player"></div>
+        <div id="player4" class="player"></div>
         <div class="static-overlay" id="static"><img src="static.gif" alt=""></div>
         <div class="off-screen" id="offScreen"></div>
         <div class="distortion" id="distortion"></div>
@@ -358,6 +360,8 @@
         <button class="ch-btn active-ch" id="ch0" onclick="switchChannel(0)"><span class="ch-num">01</span> Телепередачі</button>
         <button class="ch-btn" id="ch1" onclick="switchChannel(1)"><span class="ch-num">02</span> Радіо Україна</button>
         <button class="ch-btn" id="ch2" onclick="switchChannel(2)"><span class="ch-num">03</span> Музика</button>
+        <button class="ch-btn" id="ch3" onclick="switchChannel(3)"><span class="ch-num">04</span> Міжнар.</button>
+        <button class="ch-btn" id="ch4" onclick="switchChannel(4)"><span class="ch-num">05</span> Шум</button>
       </div>
       <div class="center-controls">
         <div class="vol-group">
@@ -453,7 +457,9 @@ function playVolumeKnob() {
 const PLAYLISTS = [
   "PL721NrD9dr5IacSk-nD3WFZOfQhyBnyra",
   "PL721NrD9dr5ILoJG8LIjC8XtnLpgrWwNX",
-  "PL721NrD9dr5KTCet9ru6BInjlRn7Q4yHa"
+  "PL721NrD9dr5KTCet9ru6BInjlRn7Q4yHa",
+  "PL721NrD9dr5LK_Isa5p3o4BmprRQuaV-h",
+  "PL721NrD9dr5JMeN7ynkia8h-VCkc_gJIm"
 ];
 let players = [], activeChannel = 0, started = false;
 
@@ -501,7 +507,7 @@ function onYouTubeIframeAPIReady() {
 }
 
 // OSD
-const CHANNEL_NAMES = ["CH 01", "CH 02", "CH 03"];
+const CHANNEL_NAMES = ["CH 01", "CH 02", "CH 03", "CH 04", "CH 05"];
 const OSD_BARS = 12;
 let osdTimeout = null;
 const osdVolBar = document.getElementById("osdVolBar");
@@ -630,7 +636,7 @@ setTimeout(checkLampOverlap, 300);
 
 // ── WATCHDOG: skip stuck / ad-blocked / restricted videos ──
 // Checks every 5s — if a playing channel hasn't moved its time, it's stuck
-const watchdogState = [{time: 0, strikes: 0}, {time: 0, strikes: 0}, {time: 0, strikes: 0}];
+const watchdogState = [{time: 0, strikes: 0}, {time: 0, strikes: 0}, {time: 0, strikes: 0}, {time: 0, strikes: 0}, {time: 0, strikes: 0}];
 
 setInterval(() => {
   players.forEach((p, i) => {
