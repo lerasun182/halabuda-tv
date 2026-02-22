@@ -28,7 +28,8 @@
     align-items: center;
     justify-content: center;
     font-family: 'Courier Prime', monospace;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
   }
 
@@ -84,10 +85,17 @@
     pointer-events: none; z-index: 1;
   }
 
-  .scene { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; }
+  .scene {
+    position: relative; z-index: 3;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 16px 0 24px;
+    max-height: 100vh;
+    overflow: visible;
+  }
 
   .cabinet {
     width: min(780px, 93vw);
+    max-height: calc(100vh - 80px);
     background: linear-gradient(160deg, var(--wood-light) 0%, var(--wood) 40%, #2a1506 100%);
     border-radius: 18px 18px 12px 12px;
     padding: 24px 28px 28px;
@@ -482,15 +490,15 @@ function onYouTubeIframeAPIReady() {
         onReady: e => {
           e.target.setVolume(40);
           e.target.mute();
-          // Jump to random video + position, then keep playing muted (continuous stream)
           e.target.playVideoAt(Math.floor(Math.random() * 50));
           setTimeout(() => {
             try {
               const dur = e.target.getDuration();
               if (dur > 60) e.target.seekTo(Math.floor(Math.random() * (dur - 30)), true);
             } catch(err) {}
-            // Stay playing muted — all channels run continuously like real TV
-          }, 1800);
+            // Ensure it's actually playing — some embeds start paused
+            try { e.target.playVideo(); } catch(err) {}
+          }, 2000);
         },
         onStateChange: e => {
           // When a video ends, jump to a random one
@@ -618,23 +626,23 @@ function checkLampOverlap() {
   const cabinet  = document.querySelector(".cabinet");
   if (!lamp || !cabinet) return;
 
-  // Temporarily show lamp to measure its real position
-  const wasHidden = lamp.style.display === "none";
-  if (wasHidden) lamp.style.display = "flex";
+  // Temporarily make visible to measure true position
+  const prev = lamp.style.display;
+  lamp.style.display = "flex";
 
   const lampRight   = lamp.getBoundingClientRect().right;
   const cabinetLeft = cabinet.getBoundingClientRect().left;
-  const overlapping = lampRight >= cabinetLeft;
+  // Add 20px buffer so lamp disappears before it actually touches
+  const overlapping = lampRight >= cabinetLeft - 20;
 
   lamp.style.display = overlapping ? "none" : "flex";
   if (lampCone) lampCone.style.display = overlapping ? "none" : "block";
 }
 
-// Check on load and every resize
+// Check on load and every resize — delay enough for layout to settle
 window.addEventListener("resize", checkLampOverlap);
-window.addEventListener("load",   checkLampOverlap);
-// Also run after a short delay to catch font/layout settle
-setTimeout(checkLampOverlap, 300);
+window.addEventListener("load", () => setTimeout(checkLampOverlap, 100));
+setTimeout(checkLampOverlap, 800);
 
 // ── WATCHDOG: skip stuck / ad-blocked / restricted videos ──
 // Checks every 5s — if a playing channel hasn't moved its time, it's stuck
@@ -647,15 +655,17 @@ setInterval(() => {
     const currentTime = p.getCurrentTime ? p.getCurrentTime() : 0;
 
     // States: -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
-    // If it's been "unstarted", "cued", or frozen (same time twice) — skip
     const isFrozen = (state === -1 || state === 5);
     const isStuck  = (state === 1 && Math.abs(currentTime - watchdogState[i].time) < 0.5);
+    const isPaused = (state === 2);
 
-    if (isFrozen || isStuck) {
+    if (isPaused) {
+      // Paused = likely needs a play button press (ad, age gate, etc) — just force play
+      try { p.playVideo(); } catch(e) {}
+      watchdogState[i].strikes = 0;
+    } else if (isFrozen || isStuck) {
       watchdogState[i].strikes++;
       if (watchdogState[i].strikes >= 2) {
-        // Two consecutive strikes = truly stuck, skip to random video
-        // Only show static/distortion on the active channel (visible one)
         if (i === activeChannel) {
           showStatic();
           triggerDistortion();
