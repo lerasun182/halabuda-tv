@@ -246,10 +246,7 @@
   .stand { width: 60%; height: 14px; background: linear-gradient(to bottom, var(--wood) 0%, #1e0e04 100%); border-radius: 0 0 8px 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.7); margin: 0 auto; }
   .stand-leg { width: 40%; height: 8px; background: linear-gradient(to bottom, #1e0e04, #120804); margin: 0 auto; border-radius: 0 0 6px 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
 
-  /* Hide lamp + cone + switch when screen is too narrow to fit them beside the TV */
-  @media (max-width: 960px) {
-    .lamp, .lamp-cone { display: none !important; }
-  }
+
 
   /* ── TV SCREEN GLOW on wall ── */
   .tv-glow {
@@ -600,6 +597,28 @@ volSlider.addEventListener("input", function () {
   clearTimeout(osdTimeout);
   osdTimeout = setTimeout(() => osd.classList.remove("show"), 2200);
 });
+
+// ── LAMP AUTO-HIDE ON OVERLAP ──
+function checkLampOverlap() {
+  const lamp     = document.getElementById("lamp");
+  const lampCone = document.getElementById("lampCone");
+  const cabinet  = document.querySelector(".cabinet");
+  if (!lamp || !cabinet) return;
+
+  const lampRight    = lamp.getBoundingClientRect().right;
+  const cabinetLeft  = cabinet.getBoundingClientRect().left;
+
+  const overlapping = lampRight >= cabinetLeft;
+  lamp.style.visibility     = overlapping ? "hidden" : "visible";
+  lamp.style.pointerEvents  = overlapping ? "none"   : "";
+  if (lampCone) lampCone.style.visibility = overlapping ? "hidden" : "visible";
+}
+
+// Check on load and every resize
+window.addEventListener("resize", checkLampOverlap);
+window.addEventListener("load",   checkLampOverlap);
+// Also run after a short delay to catch font/layout settle
+setTimeout(checkLampOverlap, 300);
 
 // ── LAMP SWITCH ──
 let lampOn = true;
