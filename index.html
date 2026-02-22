@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Halabuda TV</title>
+<title>Halabooda TV</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -205,8 +205,10 @@
     display: flex; align-items: center; gap: 8px;
     background: var(--btn); border: 1px solid #3a1f08; border-radius: 6px;
     color: #c8954a; font-family: 'VT323', monospace; font-size: 17px;
-    letter-spacing: 1px; padding: 6px 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    letter-spacing: 1px; padding: 6px 12px; cursor: pointer; transition: all 0.15s;
+    white-space: nowrap; width: 100%;
   }
+  .channels { min-width: 180px; }
   .ch-btn:hover { background: var(--btn-hover); color: var(--glow); border-color: var(--amber-dim); box-shadow: 0 0 8px rgba(232,168,76,0.2); }
   .ch-btn.active-ch { background: #2d1a06; color: var(--glow); border-color: var(--amber); box-shadow: 0 0 12px rgba(232,168,76,0.3); }
   .ch-num { font-size: 12px; color: var(--amber-dim); min-width: 18px; }
@@ -337,7 +339,7 @@
 
 <div class="scene">
   <div class="cabinet">
-    <div class="brand">◈ Halabuda TV ◈</div>
+    <div class="brand">◈ Halabooda TV ◈</div>
     <div class="bezel">
       <div class="screen-wrap">
         <div id="player0" class="player active"></div>
