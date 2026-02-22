@@ -390,13 +390,14 @@ function onYouTubeIframeAPIReady() {
         onReady: e => {
           e.target.setVolume(40);
           e.target.mute();
+          // Jump to random video + position, then keep playing muted (continuous stream)
           e.target.playVideoAt(Math.floor(Math.random() * 50));
           setTimeout(() => {
             try {
               const dur = e.target.getDuration();
               if (dur > 60) e.target.seekTo(Math.floor(Math.random() * (dur - 30)), true);
             } catch(err) {}
-            e.target.pauseVideo();
+            // Stay playing muted — all channels run continuously like real TV
           }, 1800);
         }
       }
@@ -449,8 +450,9 @@ function switchChannel(index) {
   document.getElementById("player" + activeChannel).classList.remove("active");
   document.getElementById("player" + index).classList.add("active");
   players.forEach((p, i) => {
-    if (i === index) { p.unMute(); p.setVolume(volSlider.value); p.playVideo(); }
-    else { p.mute(); p.pauseVideo(); }
+    if (i === index) { p.unMute(); p.setVolume(volSlider.value); }
+    else p.mute();
+    // Never pause — all channels stream continuously in background
   });
   activeChannel = index;
   setActiveChBtn(index);
@@ -467,8 +469,9 @@ powerBtn.addEventListener("click", function () {
     playPowerOn();
     offScreen.classList.add("hidden");
     players.forEach((p, i) => {
-      if (i === activeChannel) { p.unMute(); p.setVolume(volSlider.value); p.playVideo(); }
+      if (i === activeChannel) { p.unMute(); p.setVolume(volSlider.value); }
       else p.mute();
+      // All channels already playing continuously — no need to call playVideo()
     });
     powerBtn.classList.add("on");
     pwrLight.classList.add("on");
@@ -477,7 +480,8 @@ powerBtn.addEventListener("click", function () {
     showOsd(activeChannel, parseInt(volSlider.value));
   } else {
     playPowerOff();
-    players.forEach(p => p.pauseVideo());
+    // Mute all but keep playing — real TV keeps broadcasting even when screen is off
+    players.forEach(p => p.mute());
     offScreen.innerHTML = '<div class="off-dot"></div>';
     offScreen.classList.remove("hidden");
     setTimeout(() => { offScreen.innerHTML = ''; }, 400);
@@ -492,7 +496,14 @@ volSlider.addEventListener("input", function () {
   clearTimeout(volKnobTimeout);
   volKnobTimeout = setTimeout(playVolumeKnob, 50);
   if (started) players[activeChannel].setVolume(this.value);
-  showOsd(activeChannel, parseInt(this.value));
+  // Always show OSD and update bar on every drag tick, TV on or off
+  const val = parseInt(this.value);
+  updateOsdVolBar(val);
+  document.getElementById("osdCh").textContent = CHANNEL_NAMES[activeChannel];
+  const osd = document.getElementById("osd");
+  osd.classList.add("show");
+  clearTimeout(osdTimeout);
+  osdTimeout = setTimeout(() => osd.classList.remove("show"), 2200);
 });
 </script>
 </body>
