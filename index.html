@@ -11,7 +11,6 @@
     --amber-dim: #9c6a1e;
     --glow: #f5c76a;
     --bg-dark: #0d0a06;
-    --panel: #1a1208;
     --wood: #3b200a;
     --wood-light: #5c3214;
     --btn: #221508;
@@ -28,109 +27,149 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: var(--bg-dark);
     font-family: 'Courier Prime', monospace;
     overflow: hidden;
     position: relative;
   }
 
-  /* Scanline overlay on entire page */
-  body::before {
-    content: '';
+  /* ── BLURRY ROOM BACKGROUND ── */
+  .bg-photo {
     position: fixed;
     inset: 0;
+    z-index: 0;
+    /* Cozy room built with CSS gradients layered to simulate a warm blurry room photo */
+    background:
+      /* warm lamp glow top-right */
+      radial-gradient(ellipse at 88% 5%, rgba(255,200,80,0.55) 0%, transparent 38%),
+      /* floor lamp glow left */
+      radial-gradient(ellipse at 10% 15%, rgba(255,160,50,0.25) 0%, transparent 35%),
+      /* screen ambient light center */
+      radial-gradient(ellipse at 50% 60%, rgba(30,60,30,0.18) 0%, transparent 50%),
+      /* floor darkness */
+      radial-gradient(ellipse at 50% 110%, rgba(0,0,0,0.7) 0%, transparent 55%),
+      /* base room tones: warm wall, darker floor */
+      linear-gradient(
+        to bottom,
+        #2a1e0e 0%,
+        #3d2a12 18%,
+        #4a3318 35%,
+        #2e1e0a 52%,
+        #1a0f04 68%,
+        #0e0804 100%
+      );
+    filter: blur(0px);
+  }
+
+  /* Faux wallpaper texture on upper wall area */
+  .bg-photo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    bottom: 45%;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0px, transparent 38px,
+        rgba(255,220,140,0.03) 38px, rgba(255,220,140,0.03) 40px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px, transparent 58px,
+        rgba(255,220,140,0.025) 58px, rgba(255,220,140,0.025) 60px
+      );
+  }
+
+  /* Carpet texture on lower floor area */
+  .bg-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    top: 55%;
+    background:
+      repeating-linear-gradient(90deg, transparent 0px, transparent 8px, rgba(0,0,0,0.08) 8px, rgba(0,0,0,0.08) 9px),
+      repeating-linear-gradient(0deg,  transparent 0px, transparent 8px, rgba(0,0,0,0.08) 8px, rgba(0,0,0,0.08) 9px);
+    background-color: rgba(80,30,8,0.4);
+  }
+
+  /* Blurry-photo vignette to pull it all together */
+  .bg-vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(ellipse at 50% 45%, transparent 30%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none;
+  }
+
+  /* Scanline overlay */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
     background: repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
-      rgba(0,0,0,0.08) 2px,
-      rgba(0,0,0,0.08) 4px
+      rgba(0,0,0,0.07) 2px,
+      rgba(0,0,0,0.07) 4px
     );
     pointer-events: none;
-    z-index: 100;
   }
 
-  /* ── LAMP (behind everything) ── */
+  /* ── LAMP ── */
   .lamp {
     position: fixed;
-    top: 0;
-    right: 8%;
-    z-index: 0;
+    top: 0; right: 8%;
+    z-index: 2;
     pointer-events: none;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-
   .lamp-cord {
-    width: 2px;
-    height: 100px;
+    width: 2px; height: 100px;
     background: linear-gradient(to bottom, #4a2a10, #2a1408);
     margin: 0 auto;
   }
-
   .lamp-shade {
-    width: 70px;
-    height: 44px;
+    width: 70px; height: 44px;
     background: linear-gradient(to bottom, #b89018, #e0b030, #f0c840);
     clip-path: polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%);
-    box-shadow: 0 0 0 2px #7a5010;
-    position: relative;
+    box-shadow: 0 0 0 2px #7a5010, 0 0 30px rgba(255,200,60,0.4);
   }
-
-  /* The bulb warm cone of light cast downward on the wall */
   .lamp-cone {
     position: fixed;
-    top: 0;
-    right: 0%;
-    width: 55%;
-    height: 100%;
-    background: radial-gradient(ellipse at 85% 8%, rgba(255,190,70,0.13) 0%, rgba(255,160,40,0.06) 30%, transparent 65%);
+    top: 0; right: 0%;
+    width: 55%; height: 100%;
+    background: radial-gradient(ellipse at 85% 8%, rgba(255,190,70,0.14) 0%, rgba(255,150,30,0.05) 35%, transparent 60%);
     pointer-events: none;
-    z-index: 0;
+    z-index: 1;
   }
 
-  /* Ambient room glow from screen */
-  .room-glow {
-    position: fixed;
-    bottom: -200px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 900px;
-    height: 400px;
-    background: radial-gradient(ellipse, rgba(232,168,76,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
+  /* ── SCENE ── */
   .scene {
     position: relative;
-    z-index: 1;
+    z-index: 3;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0;
   }
 
   /* ── TV CABINET ── */
   .cabinet {
-    width: min(760px, 92vw);
+    width: min(780px, 93vw);
     background: linear-gradient(160deg, var(--wood-light) 0%, var(--wood) 40%, #2a1506 100%);
     border-radius: 18px 18px 12px 12px;
-    padding: 28px 32px 32px;
+    padding: 24px 28px 28px;
     box-shadow:
       0 0 0 3px #6b3a12,
       0 0 0 5px #2a1506,
       0 30px 80px rgba(0,0,0,0.9),
-      0 0 60px rgba(232,168,76,0.06);
+      0 0 80px rgba(232,168,76,0.07);
     position: relative;
   }
-
-  /* Wood grain texture */
   .cabinet::after {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     border-radius: inherit;
     background: repeating-linear-gradient(
       100deg,
@@ -142,7 +181,6 @@
     pointer-events: none;
   }
 
-  /* ── BRAND BADGE ── */
   .brand {
     text-align: center;
     margin-bottom: 14px;
@@ -158,98 +196,86 @@
   .bezel {
     background: #0a0a0a;
     border-radius: 14px;
-    padding: 16px;
+    padding: 14px;
     box-shadow:
       inset 0 0 30px rgba(0,0,0,0.8),
       0 0 0 2px #111,
       0 4px 20px rgba(0,0,0,0.6);
-    position: relative;
   }
 
+  /* Screen fills the bezel completely */
   .screen-wrap {
     position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
     background: var(--screen-bg);
-    border-radius: 8px;
+    border-radius: 6px;
     overflow: hidden;
-    aspect-ratio: 4/3;
-    max-height: 380px;
   }
 
-  /* CRT curvature vignette */
   .screen-wrap::after {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.55) 100%);
-    pointer-events: none;
-    z-index: 10;
+    pointer-events: none; z-index: 10;
   }
-
-  /* Scanlines on screen */
   .screen-wrap::before {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 3px,
-      rgba(0,0,0,0.12) 3px,
-      rgba(0,0,0,0.12) 4px
+      0deg, transparent, transparent 3px,
+      rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px
     );
-    pointer-events: none;
-    z-index: 11;
+    pointer-events: none; z-index: 11;
   }
 
+  /* Each player fills the screen absolutely */
   .player {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
     opacity: 0;
     transition: opacity 0.2s;
   }
   .player.active { opacity: 1; }
 
-  .static-overlay {
+  /* Make the iframe inside each player fill it */
+  .player iframe {
     position: absolute;
     inset: 0;
-    background: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.12s;
-    z-index: 9;
-  }
-  .static-overlay.show { opacity: 1; }
-  .static-overlay img {
-    width: 120%;
-    height: 120%;
-    object-fit: cover;
+    width: 100% !important;
+    height: 100% !important;
   }
 
-  /* OFF screen */
+  .static-overlay {
+    position: absolute; inset: 0;
+    background: black;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.1s; z-index: 9;
+  }
+  .static-overlay.show { opacity: 1; }
+  .static-overlay img { width: 120%; height: 120%; object-fit: cover; }
+
   .off-screen {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 40%, #0a1a0a 0%, #000 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 20;
-    transition: opacity 0.4s;
+    position: absolute; inset: 0;
+    background: #020202;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 20; transition: opacity 0.4s;
   }
   .off-screen.hidden { opacity: 0; pointer-events: none; }
   .off-dot {
-    width: 3px;
-    height: 3px;
-    background: white;
-    border-radius: 50%;
+    width: 3px; height: 3px;
+    background: white; border-radius: 50%;
     box-shadow: 0 0 6px white;
     animation: dotfade 0.4s forwards;
   }
-  @keyframes dotfade { from { opacity:1; transform:scaleX(40) scaleY(2); } to { opacity:0; transform:scaleX(0) scaleY(0); } }
+  @keyframes dotfade {
+    from { opacity:1; transform:scaleX(40) scaleY(2); }
+    to   { opacity:0; transform:scaleX(0) scaleY(0); }
+  }
 
-  /* ── CONTROLS PANEL ── */
+  /* ── CONTROLS ── */
   .controls-panel {
     display: flex;
     align-items: center;
@@ -259,128 +285,80 @@
     flex-wrap: wrap;
   }
 
-  /* Channel buttons */
-  .channels {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
+  .channels { display: flex; flex-direction: column; gap: 6px; }
   .ch-label {
     font-family: 'VT323', monospace;
-    font-size: 10px;
-    color: var(--amber-dim);
-    letter-spacing: 3px;
-    text-transform: uppercase;
+    font-size: 10px; color: var(--amber-dim);
+    letter-spacing: 3px; text-transform: uppercase;
     margin-bottom: 2px;
   }
 
   .ch-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 8px;
     background: var(--btn);
     border: 1px solid #3a1f08;
     border-radius: 6px;
     color: #c8954a;
     font-family: 'VT323', monospace;
-    font-size: 17px;
-    letter-spacing: 1px;
+    font-size: 17px; letter-spacing: 1px;
     padding: 6px 12px;
-    cursor: pointer;
-    transition: all 0.15s;
+    cursor: pointer; transition: all 0.15s;
     white-space: nowrap;
   }
-
   .ch-btn:hover {
-    background: var(--btn-hover);
-    color: var(--glow);
+    background: var(--btn-hover); color: var(--glow);
     border-color: var(--amber-dim);
     box-shadow: 0 0 8px rgba(232,168,76,0.2);
   }
-
   .ch-btn.active-ch {
-    background: #2d1a06;
-    color: var(--glow);
+    background: #2d1a06; color: var(--glow);
     border-color: var(--amber);
     box-shadow: 0 0 12px rgba(232,168,76,0.3);
   }
+  .ch-num { font-size: 12px; color: var(--amber-dim); min-width: 18px; }
 
-  .ch-num {
-    font-size: 12px;
-    color: var(--amber-dim);
-    min-width: 18px;
-  }
-
-  /* Center: power + volume */
   .center-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 14px;
   }
 
   .power-btn {
-    width: 54px;
-    height: 54px;
+    width: 54px; height: 54px;
     border-radius: 50%;
     border: 2px solid #5c3214;
     background: radial-gradient(circle at 40% 35%, #2a1508, #0e0704);
-    color: #7a4020;
-    font-size: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow:
-      0 4px 12px rgba(0,0,0,0.6),
-      inset 0 1px 0 rgba(255,255,255,0.05);
+    color: #7a4020; font-size: 20px;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
   }
-
   .power-btn:hover {
-    border-color: var(--amber);
-    color: var(--glow);
-    box-shadow:
-      0 0 20px rgba(232,168,76,0.4),
-      0 4px 12px rgba(0,0,0,0.6),
-      inset 0 1px 0 rgba(255,255,255,0.05);
+    border-color: var(--amber); color: var(--glow);
+    box-shadow: 0 0 20px rgba(232,168,76,0.4), 0 4px 12px rgba(0,0,0,0.6);
   }
-
   .power-btn.on {
-    border-color: #4aff7a;
-    color: var(--green-glow);
+    border-color: #4aff7a; color: var(--green-glow);
     box-shadow: 0 0 16px rgba(26,255,74,0.35), 0 4px 12px rgba(0,0,0,0.6);
   }
 
-  /* Volume knob area */
   .vol-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 5px;
   }
-
   .vol-label {
     font-family: 'VT323', monospace;
-    font-size: 11px;
-    color: var(--amber-dim);
-    letter-spacing: 3px;
-    text-transform: uppercase;
+    font-size: 11px; color: var(--amber-dim);
+    letter-spacing: 3px; text-transform: uppercase;
   }
 
   input[type=range] {
     -webkit-appearance: none;
-    width: 110px;
-    height: 4px;
-    border-radius: 2px;
-    outline: none;
+    width: 110px; height: 4px;
+    border-radius: 2px; outline: none;
   }
-
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 16px; height: 16px;
     border-radius: 50%;
     background: radial-gradient(circle at 40% 35%, var(--glow), var(--amber-dim));
     border: 2px solid var(--amber);
@@ -388,20 +366,13 @@
     box-shadow: 0 0 6px rgba(232,168,76,0.5);
   }
 
-  /* Indicator lights */
   .indicators {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
+    display: flex; flex-direction: column;
+    gap: 8px; align-items: center;
   }
-
   .indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #1a0a04;
-    border: 1px solid #3a1a08;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #1a0a04; border: 1px solid #3a1a08;
     box-shadow: inset 0 0 3px rgba(0,0,0,0.8);
   }
   .indicator.on {
@@ -415,18 +386,15 @@
   }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
-  /* ── BOTTOM STAND ── */
   .stand {
-    width: 60%;
-    height: 14px;
+    width: 60%; height: 14px;
     background: linear-gradient(to bottom, var(--wood) 0%, #1e0e04 100%);
     border-radius: 0 0 8px 8px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.7);
     margin: 0 auto;
   }
   .stand-leg {
-    width: 40%;
-    height: 8px;
+    width: 40%; height: 8px;
     background: linear-gradient(to bottom, #1e0e04, #120804);
     margin: 0 auto;
     border-radius: 0 0 6px 6px;
@@ -436,13 +404,15 @@
 </head>
 <body>
 
-<!-- Lamp behind everything -->
+<div class="bg-photo"></div>
+<div class="bg-vignette"></div>
+<div class="scanlines"></div>
+
 <div class="lamp">
   <div class="lamp-cord"></div>
   <div class="lamp-shade"></div>
 </div>
 <div class="lamp-cone"></div>
-<div class="room-glow"></div>
 
 <div class="scene">
   <div class="cabinet">
@@ -495,6 +465,109 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
+// ── AUDIO ENGINE ──
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+
+function getACtx() {
+  if (!actx) actx = new AudioCtx();
+  return actx;
+}
+
+function playPowerOn() {
+  const ctx = getACtx();
+  // Low hum that rises — old CRT waking up
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(40, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.6);
+  gain.gain.setValueAtTime(0.0, ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.05);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.9);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.9);
+
+  // Crackle
+  playStatic(ctx, 0.08, 0.25);
+}
+
+function playPowerOff() {
+  const ctx = getACtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(160, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.5);
+  gain.gain.setValueAtTime(0.18, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.5);
+}
+
+function playChannelSwitch() {
+  const ctx = getACtx();
+  // Sharp click
+  const bufSize = ctx.sampleRate * 0.04;
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
+  }
+  const src = ctx.createBufferSource();
+  const gain = ctx.createGain();
+  src.buffer = buf;
+  src.connect(gain); gain.connect(ctx.destination);
+  gain.gain.setValueAtTime(0.5, ctx.currentTime);
+  src.start(ctx.currentTime);
+
+  // Static burst
+  playStatic(ctx, 0.2, 0.45);
+}
+
+function playStatic(ctx, startTime, duration) {
+  const bufSize = Math.floor(ctx.sampleRate * duration);
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * 0.35;
+  }
+  const src = ctx.createBufferSource();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = 3000;
+  filter.Q.value = 0.5;
+  src.buffer = buf;
+  src.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+  gain.gain.setValueAtTime(0.0, ctx.currentTime + startTime);
+  gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + startTime + 0.05);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
+  src.start(ctx.currentTime + startTime);
+  src.stop(ctx.currentTime + startTime + duration);
+}
+
+let volKnobTimeout = null;
+function playVolumeKnob() {
+  const ctx = getACtx();
+  // Soft click/crackle on vol change
+  const bufSize = Math.floor(ctx.sampleRate * 0.03);
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize) * 0.3;
+  }
+  const src = ctx.createBufferSource();
+  const gain = ctx.createGain();
+  src.buffer = buf;
+  src.connect(gain); gain.connect(ctx.destination);
+  gain.gain.value = 0.4;
+  src.start(ctx.currentTime);
+}
+
+// ── YOUTUBE ──
 const PLAYLISTS = [
   "PL721NrD9dr5IacSk-nD3WFZOfQhyBnyra",
   "PL721NrD9dr5ILoJG8LIjC8XtnLpgrWwNX",
@@ -516,10 +589,14 @@ updateSliderBg();
 function onYouTubeIframeAPIReady() {
   PLAYLISTS.forEach((id, index) => {
     players[index] = new YT.Player("player" + index, {
-      width: "100%", height: "100%",
+      width: "100%",
+      height: "100%",
       playerVars: {
         autoplay: 0, controls: 0, rel: 0,
-        listType: "playlist", list: id, loop: 1, playlist: id
+        listType: "playlist", list: id,
+        loop: 1, playlist: id,
+        modestbranding: 1,
+        iv_load_policy: 3
       },
       events: {
         onReady: e => {
@@ -545,6 +622,7 @@ function setActiveChBtn(index) {
 
 function switchChannel(index) {
   if (!started || index === activeChannel) return;
+  playChannelSwitch();
   showStatic();
   document.getElementById("player" + activeChannel).classList.remove("active");
   document.getElementById("player" + index).classList.add("active");
@@ -563,6 +641,7 @@ const offScreen = document.getElementById("offScreen");
 
 powerBtn.addEventListener("click", function () {
   if (!started) {
+    playPowerOn();
     offScreen.classList.add("hidden");
     players.forEach((p, i) => { p.playVideo(); if (i !== activeChannel) p.mute(); });
     powerBtn.classList.add("on");
@@ -570,6 +649,7 @@ powerBtn.addEventListener("click", function () {
     sigLight.style.display = "block";
     started = true;
   } else {
+    playPowerOff();
     players.forEach(p => p.pauseVideo());
     offScreen.innerHTML = '<div class="off-dot"></div>';
     offScreen.classList.remove("hidden");
@@ -581,7 +661,11 @@ powerBtn.addEventListener("click", function () {
   }
 });
 
+// Volume: sound + update player
 volSlider.addEventListener("input", function () {
+  // Throttle knob sound so it doesn't fire every pixel
+  clearTimeout(volKnobTimeout);
+  volKnobTimeout = setTimeout(playVolumeKnob, 60);
   if (started) players[activeChannel].setVolume(this.value);
 });
 </script>
